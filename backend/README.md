@@ -54,97 +54,91 @@ python main.py
 
 ## API Documentation
 
-### Endpoint: POST /v1.0/api/recommendation_tour
+### Tour Recommendation API
 
-Gợi ý tour dựa trên sở thích và yêu cầu của người dùng.
+**Endpoint:** `POST /v1.0/api/recommendation_tour`
 
-#### Request Body
+**Description:** Gợi ý tour dựa trên các thuộc tính và mức độ ưu tiên của người dùng.
 
+**Request Body:**
 ```json
 {
     "attributes": [
         {
-            "attribute": "gia",
+            "name": "gia",
+            "value": 5000000,
             "weight": 4
         },
         {
-            "attribute": "loai_hinh",
+            "name": "loai_hinh",
+            "value": 1,
             "weight": 3
         },
         {
-            "attribute": "am_thuc",
+            "name": "am_thuc",
+            "value": 2,
             "weight": 2
         },
         {
-            "attribute": "phuong_tien",
+            "name": "phuong_tien",
+            "value": 1,
             "weight": 1
         },
         {
-            "attribute": "so_ngay",
-            "weight": 3
+            "name": "so_ngay",
+            "value": 3,
+            "weight": 4
         }
-    ],
-    "user_input": {
-        "gia": 5000000,
-        "so_ngay": 3,
-        "loai_hinh": 1,
-        "am_thuc": 2,
-        "phuong_tien": 1
-    }
+    ]
 }
 ```
 
-#### Parameters
+**Parameters:**
+- `attributes`: Danh sách các thuộc tính và mức độ ưu tiên
+  - `name`: Tên thuộc tính (gia, loai_hinh, am_thuc, phuong_tien, so_ngay)
+  - `value`: Giá trị mong muốn cho thuộc tính
+  - `weight`: Mức độ ưu tiên (0-4)
 
-- `attributes`: Danh sách các thuộc tính và trọng số tương ứng
-  - `attribute`: Tên thuộc tính (gia, loai_hinh, am_thuc, phuong_tien, so_ngay)
-  - `weight`: Trọng số (0-4)
-  
-- `user_input`: Thông tin sở thích của người dùng
-  - `gia`: Giá mong muốn (VND)
-  - `so_ngay`: Số ngày mong muốn
-  - `loai_hinh`: ID loại hình tour (1: Nghỉ dưỡng, 2: Biển, 3: Thám hiểm, 4: Núi)
-  - `am_thuc`: ID ẩm thực (1: Chua, 2: Cay, 3: Mặn, 4: Ngọt)
-  - `phuong_tien`: ID phương tiện (1: Ô tô, 2: Máy bay, 3: Tàu hỏa, 4: Thuyền)
-
-#### Response
-
+**Response:**
 ```json
-[
-    {
-        "id": 1,
-        "ten": "Tour Biển Nha Trang",
-        "gia": 5000000.0,
-        "loai_hinh": 1,
-        "am_thuc": 2,
-        "phuong_tien": 3,
-        "so_ngay": 4,
-        "mo_ta": "Tour tham quan biển Nha Trang...",
-        "url": "https://example.com/tour1.jpg",
-        "topsis_score": 0.85
-    },
-    // ... 4 tour khác
-]
+{
+    "recommendations": [
+        {
+            "id": 1,
+            "name": "Tour Hạ Long 3 ngày 2 đêm",
+            "price": 4500000,
+            "type": 1,
+            "cuisine": 2,
+            "transportation": 1,
+            "duration": 3,
+            "description": "Tour tham quan vịnh Hạ Long...",
+            "url": "https://example.com/tour1",
+            "topsis_score": 0.85
+        },
+        // ... các tour khác
+    ]
+}
 ```
 
-#### Response Fields
+**Error Responses:**
+- `400 Bad Request`: Dữ liệu đầu vào không hợp lệ
+- `404 Not Found`: Không tìm thấy tour nào
+- `500 Internal Server Error`: Lỗi server
 
-- `id`: ID của tour
-- `ten`: Tên tour
-- `gia`: Giá tour (VND)
-- `loai_hinh`: ID loại hình tour
-- `am_thuc`: ID ẩm thực
-- `phuong_tien`: ID phương tiện
-- `so_ngay`: Số ngày
-- `mo_ta`: Mô tả tour
-- `url`: URL hình ảnh tour
-- `topsis_score`: Điểm TOPSIS (0-1)
-
-#### Error Responses
-
-- 400 Bad Request: Dữ liệu đầu vào không hợp lệ
-- 404 Not Found: Không tìm thấy tour nào
-- 500 Internal Server Error: Lỗi server
+**Example Request:**
+```bash
+curl -X POST "http://localhost:8000/v1.0/api/recommendation_tour" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "attributes": [
+             {"name": "gia", "value": 5000000, "weight": 4},
+             {"name": "loai_hinh", "value": 1, "weight": 3},
+             {"name": "am_thuc", "value": 2, "weight": 2},
+             {"name": "phuong_tien", "value": 1, "weight": 1},
+             {"name": "so_ngay", "value": 3, "weight": 4}
+           ]
+         }'
+```
 
 ## Cấu Trúc Dự Án
 
